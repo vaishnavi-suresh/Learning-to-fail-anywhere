@@ -1,0 +1,25 @@
+# Requirements for running the notebooks in notebooks/
+# (01_mbra_reannotate_and_embed.ipynb, 02_counterfactual_generation.ipynb, 03_trajectory_maps.ipynb)
+#
+# Notes:
+# - `google.colab` is imported for `drive.mount(...)` in Colab; it is not
+#   installable outside Colab. Comment out those cells when running locally.
+# - `unidepth` (02_counterfactual_generation.ipynb) is installed from git and
+#   is heavy (torch-based); install separately if you need that notebook:
+#     pip install "unidepth @ git+https://github.com/lpiccinelli-eth/UniDepth.git"
+# - `vint_train` (01_mbra_reannotate_and_embed.ipynb) is this repo's local
+#   package; install it in editable mode from train/:
+#     pip install -e train/
+
+numpy
+pandas
+matplotlib
+requests
+opencv-python
+Pillow
+PyYAML
+tqdm
+utm
+huggingface_hub
+torch
+torchvision
