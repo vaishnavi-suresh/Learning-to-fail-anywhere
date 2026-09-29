@@ -1,0 +1,48 @@
+# Config for object_search_vint.py
+#
+# Objects are searched in order using a Gemini-generated goal view and ViNT.
+
+objects:
+  - "blue speaker"
+
+sdk:
+  base_url: "http://localhost:8000"
+  camera_stream_fps: 10
+  # Rate (Hz) at which /control commands are re-sent while a waypoint executes.
+  # The SDK's dead-man watchdog stops the rover if commands go stale, so this
+  # must be well above 1 / CONTROL_WATCHDOG_S (SDK default watchdog: 3s).
+  control_hz: 10
+  # /control linear/angular are unitless [-1, 1]. These calibrate that range
+  # against the rover's real speed -- tune them on your actual bot.
+  max_linear: 0.2 # control units sent when driving at max_v_mps (0.1 barely creeps forward)
+  max_angular: 0.5 # control units sent when turning at max_w_radps (calibrated: 100 deg in 3s)
+  max_v_mps: 0.5 # measured speed at max_linear (calibrate_turn.py --linear)
+  max_w_radps: 0.58 # measured turn rate at max_angular (calibrate_turn.py)
+  # Angular command below which the rover barely rotates while driving (0.25 barely turned it).
+  # Any real turn starts here and scales up to max_angular.
+  min_angular: 0.3
+  turn_deadband_radps: 0.05 # smaller ViNT turn rates drive straight
+  speak_updates: true # narrate progress via POST /speak (edge-tts, no API key needed)
+
+vint:
+  # Official ViNT safetensors checkpoint, relative to this config file.
+  checkpoint_path: "../visualnav-transformer/deployment/model_weights/vint.safetensors"
+  device: "cpu"
+  waypoint_index: 2
+  # ViNT runs and updates the streamed command at this rate, as in ViNT's deployment
+  # (frame_rate: 4). The rover keeps moving between updates.
+  rate_hz: 4
+  goal_reached_threshold: 3.0
+  # Stop if ViNT's distance stays this far above its minimum for this many
+  # consecutive ticks at rate_hz (the rover has passed the generated goal view).
+  overshoot_margin: 1.0
+  overshoot_patience: 4
+
+vlm:
+  reasoning_model: "gemini-3.6-flash"
+  goal_image_model: "gemini-3.1-flash-image"
+
+loop:
+  control_loop_hz: 1.0 # retry rate while waiting for Gemini between goal images (Hz)
+  found_confirm_count: 2 # consecutive "arrived" VLM queries required before advancing
+  post_found_pause_s: 1.0

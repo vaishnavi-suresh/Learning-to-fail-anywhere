@@ -1,0 +1,15 @@
+# Dependencies for object_search_vint.py.
+# Talks to a separately-running Earth Rovers SDK server over HTTP (see
+# ../earth-rovers-sdk) -- no import-time dependency on that server's own deps.
+requests
+numpy
+torch
+torchvision
+efficientnet-pytorch==0.7.1
+safetensors
+huggingface_hub
+PyYAML
+Pillow
+opencv-python-headless
+google-genai>=1.0.0
+python-dotenv
